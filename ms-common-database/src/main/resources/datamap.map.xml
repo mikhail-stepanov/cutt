@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/9/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/9/modelMap https://cayenne.apache.org/schema/9/modelMap.xsd"
+	 project-version="9">
+	<property name="defaultPackage" value="ru.stepanov.database.entity"/>
+	<property name="defaultSchema" value="public"/>
+	<property name="quoteSqlIdentifiers" value="true"/>
+	<db-entity name="db_user" schema="public">
+		<db-attribute name="created_date" type="TIMESTAMP" length="29"/>
+		<db-attribute name="deleted_date" type="TIMESTAMP" length="29"/>
+		<db-attribute name="email" type="VARCHAR" length="255"/>
+		<db-attribute name="id" type="OTHER" isPrimaryKey="true" isMandatory="true" length="214748"/>
+		<db-attribute name="login" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="modified_date" type="TIMESTAMP" length="29"/>
+		<db-attribute name="password" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="user_name" type="VARCHAR" length="64"/>
+	</db-entity>
+	<db-entity name="db_user_session" schema="public">
+		<db-attribute name="created_date" type="TIMESTAMP" length="29"/>
+		<db-attribute name="deleted_date" type="TIMESTAMP" length="29"/>
+		<db-attribute name="id" type="OTHER" isPrimaryKey="true" isMandatory="true" length="214748"/>
+		<db-attribute name="modified_date" type="TIMESTAMP" length="29"/>
+		<db-attribute name="user_id" type="OTHER" isMandatory="true" length="214748"/>
+	</db-entity>
+	<obj-entity name="DbUser" className="ru.stepanov.database.entity.DbUser" dbEntityName="db_user">
+		<obj-attribute name="createdDate" type="java.time.LocalDateTime" db-attribute-path="created_date"/>
+		<obj-attribute name="deletedDate" type="java.time.LocalDateTime" db-attribute-path="deleted_date"/>
+		<obj-attribute name="email" type="java.lang.String" db-attribute-path="email"/>
+		<obj-attribute name="login" type="java.lang.String" db-attribute-path="login"/>
+		<obj-attribute name="modifiedDate" type="java.time.LocalDateTime" db-attribute-path="modified_date"/>
+		<obj-attribute name="password" type="java.lang.String" db-attribute-path="password"/>
+		<obj-attribute name="userName" type="java.lang.String" db-attribute-path="user_name"/>
+	</obj-entity>
+	<obj-entity name="DbUserSession" className="ru.stepanov.database.entity.DbUserSession" dbEntityName="db_user_session">
+		<obj-attribute name="createdDate" type="java.time.LocalDateTime" db-attribute-path="created_date"/>
+		<obj-attribute name="deletedDate" type="java.time.LocalDateTime" db-attribute-path="deleted_date"/>
+		<obj-attribute name="modifiedDate" type="java.time.LocalDateTime" db-attribute-path="modified_date"/>
+	</obj-entity>
+	<db-relationship name="userSession" source="db_user" target="db_user_session" toMany="true">
+		<db-attribute-pair source="id" target="user_id"/>
+	</db-relationship>
+	<db-relationship name="sessionUser" source="db_user_session" target="db_user" toMany="false">
+		<db-attribute-pair source="user_id" target="id"/>
+	</db-relationship>
+	<obj-relationship name="userSession" source="DbUser" target="DbUserSession" deleteRule="Deny" db-relationship-path="userSession"/>
+	<obj-relationship name="sessionUser" source="DbUserSession" target="DbUser" deleteRule="Nullify" db-relationship-path="sessionUser"/>
+</data-map>
