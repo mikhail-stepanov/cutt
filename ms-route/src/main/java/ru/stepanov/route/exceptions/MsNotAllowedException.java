@@ -3,7 +3,7 @@ package ru.stepanov.route.exceptions;
 public class MsNotAllowedException extends MicroServiceException {
 
     public MsNotAllowedException() {
-        super("низя");
+        super("Not allowed");
     }
 
     @Override

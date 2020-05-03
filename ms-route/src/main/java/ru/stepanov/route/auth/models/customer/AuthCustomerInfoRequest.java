@@ -1,4 +1,4 @@
-package ru.stepanov.route.auth.models;
+package ru.stepanov.route.auth.models.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthLogoutRequest {
+public class AuthCustomerInfoRequest {
 
     @NotNull
     private String token;

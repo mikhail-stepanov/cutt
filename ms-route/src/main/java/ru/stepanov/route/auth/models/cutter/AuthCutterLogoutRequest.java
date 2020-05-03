@@ -1,15 +1,18 @@
-package ru.stepanov.route.auth.models;
+package ru.stepanov.route.auth.models.cutter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthLogoutResponse {
+public class AuthCutterLogoutRequest {
 
+    @NotNull
     private String token;
 }

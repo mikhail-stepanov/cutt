@@ -1,4 +1,4 @@
-package ru.stepanov.route.auth.models;
+package ru.stepanov.route.auth.models.cutter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,13 +7,15 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthInfoRequest {
+public class AuthCutterSignUpRequest {
 
     @NotNull
-    private String token;
+    private String email;
+
+    @NotNull
+    private String password;
 }

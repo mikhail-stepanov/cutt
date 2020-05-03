@@ -2,10 +2,9 @@ package ru.stepanov.route.auth.services;
 
 import org.springframework.web.client.RestTemplate;
 import ru.stepanov.route.auth.interfaces.IAuthenticationService;
+import ru.stepanov.route.auth.models.customer.*;
 import ru.stepanov.route.common.services.BaseMicroservice;
 import ru.stepanov.route.exceptions.MicroServiceException;
-import ru.stepanov.route.auth.models.*;
-
 
 
 public class AuthenticationService extends BaseMicroservice implements IAuthenticationService {
@@ -14,28 +13,29 @@ public class AuthenticationService extends BaseMicroservice implements IAuthenti
         super("ms-auth", restTemplate);
     }
 
+
     @Override
-    public AuthInfoResponse info(AuthInfoRequest request) throws MicroServiceException {
-        return retry(() -> restTemplate.postForEntity(buildUrl(AUTH_INFO), request, AuthInfoResponse.class).getBody());
+    public AuthCustomerInfoResponse info(AuthCustomerInfoRequest request) throws MicroServiceException {
+        return null;
     }
 
     @Override
-    public AuthLoginResponse signUp(AuthSignUpRequest request) throws MicroServiceException {
-        return retry(() -> restTemplate.postForEntity(buildUrl(AUTH_SIGNUP), request, AuthLoginResponse.class).getBody());
+    public AuthCustomerLoginResponse signUp(AuthCustomerSignUpRequest request) throws MicroServiceException {
+        return null;
     }
 
     @Override
-    public AuthLoginResponse login(AuthLoginRequest request) throws MicroServiceException {
-        return retry(() -> restTemplate.postForEntity(buildUrl(AUTH_LOGIN), request, AuthLoginResponse.class).getBody());
+    public AuthCustomerLoginResponse login(AuthCustomerLoginRequest request) throws MicroServiceException {
+        return null;
     }
 
     @Override
-    public AuthLogoutResponse logout(AuthLogoutRequest request) throws MicroServiceException {
-        return retry(() -> restTemplate.postForEntity(buildUrl(AUTH_LOGOUT), request, AuthLogoutResponse.class).getBody());
+    public AuthCustomerLogoutResponse logout(AuthCustomerLogoutRequest request) throws MicroServiceException {
+        return null;
     }
 
     @Override
     public String password(String request) throws MicroServiceException {
-        return retry(() -> restTemplate.postForEntity(buildUrl("sdf"), request, String.class).getBody());
+        return null;
     }
 }

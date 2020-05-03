@@ -3,7 +3,7 @@ package ru.stepanov.route.exceptions;
 public class MsAlreadyExistsException extends MicroServiceException {
 
     public MsAlreadyExistsException() {
-        super("Объект существует.");
+        super("Object already exists.");
     }
 
     @Override

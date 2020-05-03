@@ -1,23 +1,27 @@
 package ru.stepanov.route.auth.interfaces;
 
-import ru.stepanov.ms.client.auth.models.*;
+import ru.stepanov.route.auth.models.customer.*;
 import ru.stepanov.route.exceptions.MicroServiceException;
-import ru.stepanov.route.auth.models.*;
 
 public interface IAuthenticationService {
 
-    String AUTH_INFO = "/auth/info";
-    String AUTH_SIGNUP = "/auth/signup";
-    String AUTH_LOGIN = "/auth/login";
-    String AUTH_LOGOUT = "/auth/logout";
+    String AUTH_CUSTOMER_INFO = "/auth/customer/info";
+    String AUTH_CUSTOMER_SIGN_UP = "/auth/customer/signup";
+    String AUTH_CUSTOMER_LOGIN = "/auth/customer/login";
+    String AUTH_CUSTOMER_LOGOUT = "/auth/customer/logout";
 
-    AuthInfoResponse info(AuthInfoRequest request) throws MicroServiceException;
+    String AUTH_CUTTER_INFO = "/auth/cutter/info";
+    String AUTH_CUTTER_SIGN_UP = "/auth/cutter/signup";
+    String AUTH_CUTTER_LOGIN = "/auth/cutter/login";
+    String AUTH_CUTTER_LOGOUT = "/auth/cutter/logout";
 
-    AuthLoginResponse signUp(AuthSignUpRequest request) throws MicroServiceException;
+    AuthCustomerInfoResponse info(AuthCustomerInfoRequest request) throws MicroServiceException;
 
-    AuthLoginResponse login(AuthLoginRequest request) throws MicroServiceException;
+    AuthCustomerLoginResponse signUp(AuthCustomerSignUpRequest request) throws MicroServiceException;
 
-    AuthLogoutResponse logout(AuthLogoutRequest request) throws MicroServiceException;
+    AuthCustomerLoginResponse login(AuthCustomerLoginRequest request) throws MicroServiceException;
+
+    AuthCustomerLogoutResponse logout(AuthCustomerLogoutRequest request) throws MicroServiceException;
 
     String password(String request) throws MicroServiceException;
 

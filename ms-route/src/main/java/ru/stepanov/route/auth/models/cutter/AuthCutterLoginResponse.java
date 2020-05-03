@@ -1,4 +1,4 @@
-package ru.stepanov.route.user.models;
+package ru.stepanov.route.auth.models.cutter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoRequest {
+public class AuthCutterLoginResponse {
 
-    private String id;
+    private String token;
 
-    private String sessionId;
+    private String userId;
+
+    private String userName;
 }

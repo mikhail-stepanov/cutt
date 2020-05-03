@@ -4,10 +4,8 @@ import ru.stepanov.core.endpoints.AbstractMicroservice;
 import ru.stepanov.core.models.UserInfo;
 import ru.stepanov.core.util.RLUCache;
 import ru.stepanov.database.DatabaseService;
-import ru.stepanov.database.entity.DbUser;
-import ru.stepanov.database.entity.DbUserSession;
 import ru.stepanov.route.auth.interfaces.IAuthenticationService;
-import ru.stepanov.route.auth.models.*;
+import ru.stepanov.route.auth.models.customer.*;
 import ru.stepanov.route.exceptions.MicroServiceException;
 import ru.stepanov.route.exceptions.MsNotAuthorizedException;
 import org.apache.cayenne.ObjectContext;
@@ -46,7 +44,7 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
 
     @Override
     @RequestMapping(path = AUTH_INFO, method = RequestMethod.POST)
-    public AuthInfoResponse info(@Valid @RequestBody AuthInfoRequest request) throws MicroServiceException {
+    public AuthCustomerInfoResponse info(@Valid @RequestBody AuthCustomerInfoRequest request) throws MicroServiceException {
 
         ObjectContext context = databaseService.getContext();
 
@@ -54,7 +52,7 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
 
         DbUserSession session = SelectById.query(DbUserSession.class, sessionId).selectOne(context);
 
-        return AuthInfoResponse.builder()
+        return AuthCustomerInfoResponse.builder()
                 .userId(session.getUser().getObjectId().getIdSnapshot().get("id").toString())
                 .userName(session.getUser().getLogin())
                 .build();
@@ -62,7 +60,7 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
 
     @Override
     @RequestMapping(path = AUTH_LOGIN, method = RequestMethod.POST)
-    public AuthLoginResponse login(@Valid @RequestBody AuthLoginRequest request) throws MicroServiceException {
+    public AuthCustomerLoginResponse login(@Valid @RequestBody AuthCustomerLoginRequest request) throws MicroServiceException {
 
         ObjectContext context = databaseService.getContext();
 
@@ -79,7 +77,7 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
         session.setUser(user);
         context.commitChanges();
 
-        return AuthLoginResponse.builder()
+        return AuthCustomerLoginResponse.builder()
                 .token(session.getObjectId().getIdSnapshot().get("id").toString())
                 .userId(session.getUser().getObjectId().getIdSnapshot().get("id").toString())
                 .userName(user.getLogin())
@@ -88,13 +86,13 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
 
     @Override
     @RequestMapping(path = AUTH_LOGOUT, method = RequestMethod.POST)
-    public AuthLogoutResponse logout(@Valid @RequestBody AuthLogoutRequest request) throws MicroServiceException {
+    public AuthCustomerLogoutResponse logout(@Valid @RequestBody AuthCustomerLogoutRequest request) throws MicroServiceException {
         return null;
     }
 
     @Override
     @RequestMapping(path = AUTH_SIGNUP, method = RequestMethod.POST)
-    public AuthLoginResponse signUp(@Valid @RequestBody AuthSignUpRequest request) throws MicroServiceException {
+    public AuthCustomerLoginResponse signUp(@Valid @RequestBody AuthCustomerSignUpRequest request) throws MicroServiceException {
 
         ObjectContext context = databaseService.getContext();
 
@@ -105,7 +103,7 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
 
         context.commitChanges();
 
-        return login(AuthLoginRequest.builder()
+        return login(AuthCustomerLoginRequest.builder()
                 .login(request.getLogin())
                 .password(request.getPassword())
                 .build());

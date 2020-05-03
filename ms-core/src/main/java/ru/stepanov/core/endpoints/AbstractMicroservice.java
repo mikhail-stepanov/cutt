@@ -4,7 +4,7 @@ import ru.stepanov.core.models.ErrorResponse;
 import ru.stepanov.core.models.UserInfo;
 import ru.stepanov.core.validation.ModelValidator;
 import ru.stepanov.route.auth.interfaces.IAuthenticationService;
-import ru.stepanov.route.auth.models.AuthInfoRequest;
+import ru.stepanov.route.auth.models.customer.AuthCustomerInfoRequest;
 import ru.stepanov.route.exceptions.MicroServiceException;
 import ru.stepanov.route.exceptions.MsBadRequestException;
 import ru.stepanov.route.exceptions.MsInternalErrorException;
@@ -74,9 +74,9 @@ public abstract class AbstractMicroservice {
     public final ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
-        StringBuffer fields = new StringBuffer();
+        StringBuilder fields = new StringBuilder();
         for (FieldError field : fieldErrors) {
-            fields.append(field.getField() + ", ");
+            fields.append(field.getField()).append(", ");
         }
         fields.delete(fields.length() - 2, fields.length());
         return handleMicroserviceException(new MsBadRequestException(fields.toString()), request, HttpStatus.BAD_REQUEST);
@@ -124,30 +124,25 @@ public abstract class AbstractMicroservice {
             if (!token.isPresent())
                 return Optional.empty();
 
-            //сначала смотрим в атрибутах запроса
             Optional<UserInfo> userInfo = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
                     .map(attrs -> attrs.getAttribute(USER_INFO_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST))
                     .map(info -> (UserInfo) info);
 
-            //если нашли - возвращаем
             if (userInfo.isPresent())
                 return userInfo;
 
-            //если не нашли, лезем в сервис за информацией
-            userInfo = Optional.ofNullable(authenticationService.info(AuthInfoRequest.builder().token(token.get()).build()))
+            userInfo = Optional.ofNullable(authenticationService.info(AuthCustomerInfoRequest.builder().token(token.get()).build()))
                     .map(response -> UserInfo.builder()
                             .userId(response.getUserId())
                             .userName(response.getUserName())
                             .build());
 
-            //если нашли - устанавливаем в параметры запроса
             userInfo.ifPresent(info -> {
                 Optional.ofNullable(RequestContextHolder.getRequestAttributes()).ifPresent(attrs -> {
                     attrs.setAttribute(USER_INFO_ATTRIBUTE, info, RequestAttributes.SCOPE_REQUEST);
                 });
             });
 
-            //возвращаем результат
             return userInfo;
         } catch (Exception ex) {
             return Optional.empty();
@@ -168,10 +163,8 @@ public abstract class AbstractMicroservice {
                 ex.getMessage(),
                 requestURL,
                 requestBody);
-        //пишем детальную информацию в другой лог
         log.error(errorMessage);
 
-        //возвращаем пользователю ничего не значащую информацию об ошибке
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code(String.valueOf(httpStatus.value()))
                 .session(getInternalSessionId())

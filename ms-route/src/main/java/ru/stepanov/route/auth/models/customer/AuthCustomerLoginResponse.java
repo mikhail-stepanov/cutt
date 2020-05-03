@@ -1,4 +1,4 @@
-package ru.stepanov.route.user.models;
+package ru.stepanov.route.auth.models.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCertificateResponse {
+public class AuthCustomerLoginResponse {
 
-    private String id;
+    private String token;
 
-    private String cn;
+    private String userId;
 
-    private String thumbprint;
+    private String userName;
 }

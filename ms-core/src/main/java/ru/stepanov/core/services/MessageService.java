@@ -2,7 +2,7 @@ package ru.stepanov.core.services;
 
 import com.google.gson.*;
 import com.rabbitmq.client.*;
-import ru.stepanov.route.message.interfaces.IMessageService;
+import ru.stepanov.route.message.IMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

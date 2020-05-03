@@ -3,7 +3,7 @@ package ru.stepanov.route.exceptions;
 public class MsNotAuthorizedException extends MicroServiceException {
 
     public MsNotAuthorizedException() {
-        super("");
+        super("Unauthorized");
     }
 
     @Override
