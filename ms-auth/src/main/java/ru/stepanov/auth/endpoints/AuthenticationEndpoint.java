@@ -1,15 +1,15 @@
 package ru.stepanov.auth.endpoints;
 
-import ru.stepanov.common.endpoints.AbstractMicroservice;
-import ru.stepanov.common.models.UserInfo;
-import ru.stepanov.common.util.RLUCache;
+import ru.stepanov.core.endpoints.AbstractMicroservice;
+import ru.stepanov.core.models.UserInfo;
+import ru.stepanov.core.util.RLUCache;
 import ru.stepanov.database.DatabaseService;
 import ru.stepanov.database.entity.DbUser;
 import ru.stepanov.database.entity.DbUserSession;
-import ru.stepanov.ms.client.auth.interfaces.IAuthenticationService;
-import ru.stepanov.ms.client.auth.models.*;
-import ru.stepanov.ms.client.exceptions.MicroServiceException;
-import ru.stepanov.ms.client.exceptions.MsNotAuthorizedException;
+import ru.stepanov.route.auth.interfaces.IAuthenticationService;
+import ru.stepanov.route.auth.models.*;
+import ru.stepanov.route.exceptions.MicroServiceException;
+import ru.stepanov.route.exceptions.MsNotAuthorizedException;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.query.ObjectSelect;
 import org.apache.cayenne.query.SelectById;
@@ -112,7 +112,7 @@ public class AuthenticationEndpoint extends AbstractMicroservice implements IAut
     }
 
     @Override
-    @RequestMapping(path = AUTH_PASSWORD, method = RequestMethod.POST)
+    @RequestMapping(path = "dfsdf", method = RequestMethod.POST)
     public String password(@Valid @RequestBody String request) throws MicroServiceException {
         String password = "tch_" + request;
         return DigestUtils.md5DigestAsHex(password.getBytes());
