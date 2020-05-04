@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class AuthCutterLoginRequest {
 
     @NotNull
-    private String login;
+    private String email;
 
     @NotNull
     private String password;

@@ -55,10 +55,11 @@
     </properties>
 
     <modules>
-        <module>ms-client</module>
         <module>ms-core</module>
-        <module>ms-common-database</module>
+        <module>ms-route</module>
+        <module>ms-database</module>
         <module>ms-auth</module>
+        <module>ms-smtp</module>
     </modules>
 
     <dependencies>

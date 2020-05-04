@@ -13,9 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class AuthCustomerLoginRequest {
 
-    @NotNull
-    private String login;
+    String email;
 
-    @NotNull
-    private String password;
+    String password;
 }

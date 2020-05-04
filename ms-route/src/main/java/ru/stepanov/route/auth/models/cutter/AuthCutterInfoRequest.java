@@ -15,5 +15,5 @@ import javax.validation.constraints.NotNull;
 public class AuthCutterInfoRequest {
 
     @NotNull
-    private String token;
+    Long id;
 }

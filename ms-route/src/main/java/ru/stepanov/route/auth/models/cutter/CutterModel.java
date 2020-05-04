@@ -5,25 +5,33 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthCutterSignUpRequest {
+public class CutterModel {
 
-    @NotNull
+    Long id;
+
     String email;
 
-    @NotNull
-    String password;
-
-    @NotNull
     String phone;
 
     String firstName;
 
     String lastName;
 
+    Long idAddress;
+
+    String password;
+
+    String salt;
+
+    LocalDateTime createdDate;
+
+    LocalDateTime modifiedDate;
+
+    LocalDateTime deletedDate;
 }

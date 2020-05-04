@@ -13,6 +13,5 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class AuthCustomerLogoutRequest {
 
-    @NotNull
-    private String token;
+    Long id;
 }

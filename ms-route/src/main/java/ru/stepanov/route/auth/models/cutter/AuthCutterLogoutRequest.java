@@ -14,5 +14,5 @@ import javax.validation.constraints.NotNull;
 public class AuthCutterLogoutRequest {
 
     @NotNull
-    private String token;
+    private String id;
 }

@@ -15,5 +15,6 @@ import javax.validation.constraints.NotNull;
 public class AuthCustomerInfoRequest {
 
     @NotNull
-    private String token;
+    Long id;
+
 }

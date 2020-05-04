@@ -11,7 +11,7 @@
 
     <dependencies>
         <dependency>
-            <artifactId>ms-client</artifactId>
+            <artifactId>ms-route</artifactId>
             <groupId>ru.stepanov</groupId>
             <version>1.0.0</version>
             <scope>compile</scope>

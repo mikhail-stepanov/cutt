@@ -1,8 +1,5 @@
 package ru.stepanov.core.configurations;
 
-import ru.stepanov.core.filters.HttpServletRequestFilter;
-import ru.stepanov.route.auth.interfaces.IAuthenticationService;
-import ru.stepanov.route.auth.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -11,6 +8,9 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import ru.stepanov.core.filters.HttpServletRequestFilter;
+import ru.stepanov.route.auth.interfaces.IAuthenticationService;
+import ru.stepanov.route.auth.services.AuthenticationService;
 
 
 @Configuration
@@ -25,13 +25,13 @@ public class MicroservicesConfiguration {
 
     @Bean
     @LoadBalanced
-    RestTemplate restTemplate(){
+    RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
 
     @Bean
-    IAuthenticationService authenticationService(){
+    IAuthenticationService authenticationService() {
         return new AuthenticationService(restTemplate());
     }
 

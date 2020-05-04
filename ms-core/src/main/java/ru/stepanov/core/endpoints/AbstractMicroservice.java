@@ -1,14 +1,5 @@
 package ru.stepanov.core.endpoints;
 
-import ru.stepanov.core.models.ErrorResponse;
-import ru.stepanov.core.models.UserInfo;
-import ru.stepanov.core.validation.ModelValidator;
-import ru.stepanov.route.auth.interfaces.IAuthenticationService;
-import ru.stepanov.route.auth.models.customer.AuthCustomerInfoRequest;
-import ru.stepanov.route.exceptions.MicroServiceException;
-import ru.stepanov.route.exceptions.MsBadRequestException;
-import ru.stepanov.route.exceptions.MsInternalErrorException;
-import ru.stepanov.route.exceptions.MsObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +10,21 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.context.request.*;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
+import ru.stepanov.core.models.ErrorResponse;
+import ru.stepanov.core.validation.ModelValidator;
+import ru.stepanov.route.auth.interfaces.IAuthenticationService;
+import ru.stepanov.route.exceptions.MicroServiceException;
+import ru.stepanov.route.exceptions.MsBadRequestException;
+import ru.stepanov.route.exceptions.MsInternalErrorException;
+import ru.stepanov.route.exceptions.MsObjectNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -88,7 +89,7 @@ public abstract class AbstractMicroservice {
     }
 
     private String getInternalSessionId() {
-        return header("x-cutt-sid")
+        return header("cutt-sid")
                 .orElse(UUID.randomUUID().toString());
     }
 
@@ -116,39 +117,6 @@ public abstract class AbstractMicroservice {
                 .map(ServletRequestAttributes::getRequest)
                 .map(request -> request.getHeader(headerName));
     }
-
-    protected Optional<UserInfo> user() {
-
-        try {
-            Optional<String> token = header(HEADER_CUTT_TOKEN);
-            if (!token.isPresent())
-                return Optional.empty();
-
-            Optional<UserInfo> userInfo = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
-                    .map(attrs -> attrs.getAttribute(USER_INFO_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST))
-                    .map(info -> (UserInfo) info);
-
-            if (userInfo.isPresent())
-                return userInfo;
-
-            userInfo = Optional.ofNullable(authenticationService.info(AuthCustomerInfoRequest.builder().token(token.get()).build()))
-                    .map(response -> UserInfo.builder()
-                            .userId(response.getUserId())
-                            .userName(response.getUserName())
-                            .build());
-
-            userInfo.ifPresent(info -> {
-                Optional.ofNullable(RequestContextHolder.getRequestAttributes()).ifPresent(attrs -> {
-                    attrs.setAttribute(USER_INFO_ATTRIBUTE, info, RequestAttributes.SCOPE_REQUEST);
-                });
-            });
-
-            return userInfo;
-        } catch (Exception ex) {
-            return Optional.empty();
-        }
-    }
-
 
     @ResponseBody
     private ResponseEntity<ErrorResponse> handleMicroserviceException(MicroServiceException ex, WebRequest request, HttpStatus httpStatus) {

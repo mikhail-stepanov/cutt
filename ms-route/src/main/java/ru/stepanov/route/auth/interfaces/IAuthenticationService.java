@@ -1,6 +1,8 @@
 package ru.stepanov.route.auth.interfaces;
 
+import ru.stepanov.route.auth.models.LogoutResponse;
 import ru.stepanov.route.auth.models.customer.*;
+import ru.stepanov.route.auth.models.cutter.*;
 import ru.stepanov.route.exceptions.MicroServiceException;
 
 public interface IAuthenticationService {
@@ -15,14 +17,22 @@ public interface IAuthenticationService {
     String AUTH_CUTTER_LOGIN = "/auth/cutter/login";
     String AUTH_CUTTER_LOGOUT = "/auth/cutter/logout";
 
-    AuthCustomerInfoResponse info(AuthCustomerInfoRequest request) throws MicroServiceException;
+    CustomerModel customerInfo(AuthCustomerInfoRequest request) throws MicroServiceException;
 
-    AuthCustomerLoginResponse signUp(AuthCustomerSignUpRequest request) throws MicroServiceException;
+    CustomerModel customerSignUp(AuthCustomerSignUpRequest request) throws MicroServiceException;
 
-    AuthCustomerLoginResponse login(AuthCustomerLoginRequest request) throws MicroServiceException;
+    CustomerModel customerLogin(AuthCustomerLoginRequest request) throws MicroServiceException;
 
-    AuthCustomerLogoutResponse logout(AuthCustomerLogoutRequest request) throws MicroServiceException;
+    LogoutResponse customerLogout(AuthCustomerLogoutRequest request) throws MicroServiceException;
 
-    String password(String request) throws MicroServiceException;
+
+    CutterModel cutterInfo(AuthCutterInfoRequest request) throws MicroServiceException;
+
+    CutterModel cutterSignUp(AuthCutterSignUpRequest request) throws MicroServiceException;
+
+    CutterModel cutterLogin(AuthCutterLoginRequest request) throws MicroServiceException;
+
+    LogoutResponse cutterLogout(AuthCutterLogoutRequest request) throws MicroServiceException;
+
 
 }

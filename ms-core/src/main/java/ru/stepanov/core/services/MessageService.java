@@ -30,12 +30,10 @@ public class MessageService implements IMessageService {
     private final Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, type, jsonDeserializationContext) -> {
-                return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT));
-            })
-            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (dt, type, jsonDeserializationContext) -> {
-                return new JsonPrimitive(dt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT)));
-            })
+            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, type, jsonDeserializationContext)
+                    -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT)))
+            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (dt, type, jsonDeserializationContext)
+                    -> new JsonPrimitive(dt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT))))
             .create();
 
     ConnectionFactory factory;
@@ -73,7 +71,6 @@ public class MessageService implements IMessageService {
     @Override
     public <TMessageType> boolean publish(String queueName, TMessageType messageObject) {
         try{
-            //отправляем сообщение кролику
             if (!channel.isOpen())
             {
                 reconnect();
@@ -126,12 +123,6 @@ public class MessageService implements IMessageService {
                             .map(item -> new String(item, StandardCharsets.UTF_8))
                             .map(message -> gson.fromJson(message, messageTypeClass))
                             .orElse(null);
-
-                    if (messageObject != null && callback.apply(messageObject)) {
-                        //System.out.println("message processed: " + envelope.getDeliveryTag());
-                    }else{
-                        //TODO: запись в очередь с ошибками
-                    }
                 }catch (Exception ex){
 
                 }
@@ -152,28 +143,11 @@ public class MessageService implements IMessageService {
             consumeChannel.basicQos(50, true);
             String consumerId = consumeChannel.basicConsume(queueName, false, new Worker<>(consumeChannel, threadCount, messageClass, callback));
 
-            /*DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-
-                TMessageType messageObject = Optional.ofNullable(delivery)
-                        .map(item -> new String(item.getBody(), StandardCharsets.UTF_8))
-                        .map(message -> gson.fromJson(message, messageClass))
-                        .orElse(null);
-
-                if (messageObject != null && callback.apply(messageObject)){
-                    return;
-                }
-
-                //TODO: перебрасывать в очередь с ошибками
-                System.out.println(delivery.getEnvelope().getExchange());
-            };
-
-            String consumerId = channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});*/
             return () -> consumeChannel.basicCancel(consumerId);
         } catch (Exception ex){
             ex.printStackTrace();
         }
         return null;
-
     }
 
     @Override
@@ -191,7 +165,7 @@ public class MessageService implements IMessageService {
                     try {
                         publish(queueName, new PingMessage());
                     }
-                    catch (Exception e)
+                    catch (Exception ignored)
                     {
                     }
                 });

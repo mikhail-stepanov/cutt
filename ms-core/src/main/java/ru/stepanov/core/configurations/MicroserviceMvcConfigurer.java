@@ -1,6 +1,5 @@
 package ru.stepanov.core.configurations;
 
-import ru.stepanov.core.interceptors.MetricInterceptor;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +18,6 @@ public class MicroserviceMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new MetricInterceptor(meterRegistry, applicationName));
     }
+
 }
