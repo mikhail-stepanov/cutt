@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import ru.stepanov.core.interceptors.MetricInterceptor;
 
 @Configuration
 public class MicroserviceMvcConfigurer implements WebMvcConfigurer {
@@ -18,6 +19,6 @@ public class MicroserviceMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new MetricInterceptor(meterRegistry, applicationName));
     }
-
 }

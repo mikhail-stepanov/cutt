@@ -42,7 +42,6 @@ public class DataSourceConfiguration {
         jdbcConfig.setPassword(password);
         jdbcConfig.setDriverClassName(driverClassName);
 
-
         return new HikariDataSource(jdbcConfig);
     }
 }

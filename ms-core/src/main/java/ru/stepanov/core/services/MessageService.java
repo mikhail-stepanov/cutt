@@ -2,9 +2,9 @@ package ru.stepanov.core.services;
 
 import com.google.gson.*;
 import com.rabbitmq.client.*;
-import ru.stepanov.route.message.IMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.stepanov.route.message.IMessageService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,10 +30,12 @@ public class MessageService implements IMessageService {
     private final Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, type, jsonDeserializationContext)
-                    -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT)))
-            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (dt, type, jsonDeserializationContext)
-                    -> new JsonPrimitive(dt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT))))
+            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, type, jsonDeserializationContext) -> {
+                return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT));
+            })
+            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (dt, type, jsonDeserializationContext) -> {
+                return new JsonPrimitive(dt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'[HH][:mm][[:ss][.SSS]]").withResolverStyle(ResolverStyle.LENIENT)));
+            })
             .create();
 
     ConnectionFactory factory;
@@ -54,7 +56,7 @@ public class MessageService implements IMessageService {
     @PostConstruct
     private void init() {
 
-        try{
+        try {
             factory = new ConnectionFactory();
             factory.setHost(queueHost);
             factory.setPort(queuePort);
@@ -63,16 +65,15 @@ public class MessageService implements IMessageService {
 
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }
 
     @Override
     public <TMessageType> boolean publish(String queueName, TMessageType messageObject) {
-        try{
-            if (!channel.isOpen())
-            {
+        try {
+            if (!channel.isOpen()) {
                 reconnect();
             }
             channel.basicPublish("", queueName,
@@ -84,7 +85,7 @@ public class MessageService implements IMessageService {
                             .build()
                     , gson.toJson(messageObject).getBytes(StandardCharsets.UTF_8));
             return true;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;
@@ -95,8 +96,7 @@ public class MessageService implements IMessageService {
         init();
     }
 
-    static class PingMessage
-    {
+    static class PingMessage {
 
     }
 
@@ -107,7 +107,7 @@ public class MessageService implements IMessageService {
 
         private final Gson gson = new Gson();
 
-        public Worker(Channel c, int threadCount, Class<TMessageType> messageTypeClass , Function<TMessageType, Boolean> callback) throws Exception {
+        public Worker(Channel c, int threadCount, Class<TMessageType> messageTypeClass, Function<TMessageType, Boolean> callback) throws Exception {
             super(c);
             this.callback = callback;
             this.messageTypeClass = messageTypeClass;
@@ -118,12 +118,13 @@ public class MessageService implements IMessageService {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
             Runnable task = () -> {
-                try{
+                try {
                     TMessageType messageObject = Optional.ofNullable(body)
                             .map(item -> new String(item, StandardCharsets.UTF_8))
                             .map(message -> gson.fromJson(message, messageTypeClass))
                             .orElse(null);
-                }catch (Exception ex){
+
+                } catch (Exception ex) {
 
                 }
 
@@ -137,50 +138,46 @@ public class MessageService implements IMessageService {
         }
     }
 
-    public <TMessageType> Closeable subscribe(String queueName, int threadCount, Class<TMessageType> messageClass, Function<TMessageType, Boolean> callback){
-        try{
+    public <TMessageType> Closeable subscribe(String queueName, int threadCount, Class<TMessageType> messageClass, Function<TMessageType, Boolean> callback) {
+        try {
             Channel consumeChannel = factory.newConnection().createChannel();
             consumeChannel.basicQos(50, true);
             String consumerId = consumeChannel.basicConsume(queueName, false, new Worker<>(consumeChannel, threadCount, messageClass, callback));
-
             return () -> consumeChannel.basicCancel(consumerId);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
+
     }
 
     @Override
     public <TMessageType> Closeable subscribeBatch(String queueName, int batchSize, Class<TMessageType> messageClass, Function<List<TMessageType>, Boolean> callback) {
-        try{
+        try {
             Channel consumeChannel = factory.newConnection().createChannel();
             consumeChannel.basicQos(batchSize);
             final LinkedList<TMessageType> batch = new LinkedList<>();
             final Instant[] startTime = {Instant.now()};
 
-            final String consumerId = consumeChannel.basicConsume(queueName, false, new DefaultConsumer(consumeChannel)
-            {
+            final String consumerId = consumeChannel.basicConsume(queueName, false, new DefaultConsumer(consumeChannel) {
 
-                javax.swing.Timer timer =  new javax.swing.Timer(2000, $ -> {
+                javax.swing.Timer timer = new javax.swing.Timer(2000, $ -> {
                     try {
                         publish(queueName, new PingMessage());
-                    }
-                    catch (Exception ignored)
-                    {
+                    } catch (Exception e) {
                     }
                 });
 
                 @PreDestroy
-                private void destroy()
-                {
+                private void destroy() {
                     timer.stop();
                 }
 
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
-                    final String messageTypeName  = properties.getType() == null ? "null" :  messageClass.getSimpleName();
-                    final String encoding = properties.getContentEncoding() == null ? StandardCharsets.UTF_8.displayName() :  properties.getContentEncoding();
+                    final String messageTypeName = properties.getType() == null ? "null" : messageClass.getSimpleName();
+                    final String encoding = properties.getContentEncoding() == null ? StandardCharsets.UTF_8.displayName() : properties.getContentEncoding();
                     Charset charset = Charset.forName(encoding);
 
 
@@ -195,11 +192,9 @@ public class MessageService implements IMessageService {
 
                             if (messageObject != null) {
 
-                               pushMessage(messageObject);
-                            }
-                            else
-                            {
-                                System.err.println(String.format("unsupported message format \"%s\"", body == null ? "null" :  new String( body, StandardCharsets.UTF_8)));
+                                pushMessage(messageObject);
+                            } else {
+                                System.err.println(String.format("unsupported message format \"%s\"", body == null ? "null" : new String(body, StandardCharsets.UTF_8)));
                                 getChannel().basicAck(envelope.getDeliveryTag(), false);
                             }
 
@@ -208,19 +203,15 @@ public class MessageService implements IMessageService {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                    }
-                    else if (PingMessage.class.getSimpleName().equals(properties.getType()))
-                    {
+                    } else if (PingMessage.class.getSimpleName().equals(properties.getType())) {
                         processBatchMessages(envelope);
-                    }
-                    else {
+                    } else {
                         System.err.println(String.format("unsupported message type \"%s\"", messageTypeName));
                         getChannel().basicAck(envelope.getDeliveryTag(), false);
                     }
                 }
 
-                private void pushMessage(TMessageType messageObject)
-                {
+                private void pushMessage(TMessageType messageObject) {
                     batch.add(messageObject);
                     if (timer.isRepeats())
                         timer.setRepeats(false); // Only execute once
@@ -245,7 +236,7 @@ public class MessageService implements IMessageService {
             });
 
             return () -> consumeChannel.basicCancel(consumerId);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;

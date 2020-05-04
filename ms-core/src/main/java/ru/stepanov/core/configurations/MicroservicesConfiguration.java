@@ -25,13 +25,12 @@ public class MicroservicesConfiguration {
 
     @Bean
     @LoadBalanced
-    RestTemplate restTemplate() {
+    RestTemplate restTemplate(){
         return new RestTemplate();
     }
 
-
     @Bean
-    IAuthenticationService authenticationService() {
+    IAuthenticationService authenticationService(){
         return new AuthenticationService(restTemplate());
     }
 

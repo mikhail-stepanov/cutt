@@ -47,7 +47,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Finchley.SR1</spring-cloud.version>
+        <spring-cloud.version>Finchley.SR2</spring-cloud.version>
         <cayenne.version>4.1.M1</cayenne.version>
         <micrometer.version>1.1.2</micrometer.version>
         <build.number></build.number>
@@ -59,6 +59,10 @@
         <module>ms-route</module>
         <module>ms-database</module>
         <module>ms-auth</module>
+        <module>ms-appoinment</module>
+        <module>ms-chat</module>
+        <module>ms-customer</module>
+        <module>ms-cutter</module>
         <module>ms-smtp</module>
     </modules>
 
@@ -126,19 +130,16 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.6</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
             <version>4.5.6</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>

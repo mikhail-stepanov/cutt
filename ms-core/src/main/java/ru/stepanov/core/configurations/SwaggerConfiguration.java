@@ -21,25 +21,27 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("ru.stepanov"))
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 .paths(PathSelectors.any())
+
                 .build()
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.GET, Arrays.asList(
-                        new ResponseMessageBuilder().code(200).message("Success").build(),
-                        new ResponseMessageBuilder().code(400).message("Bad Request").build(),
-                        new ResponseMessageBuilder().code(500).message("Internal server error").build()
+                        new ResponseMessageBuilder().code(200).message("Запрос успешно выполнен").build(),
+                        new ResponseMessageBuilder().code(400).message("Ошибка в запросе").build(),
+                        new ResponseMessageBuilder().code(500).message("Внутренняя ошибка сервиса").build()
                         )
                 )
                 .globalResponseMessage(RequestMethod.POST, Arrays.asList(
-                        new ResponseMessageBuilder().code(200).message("Success").build(),
-                        new ResponseMessageBuilder().code(400).message("Bad Request").build(),
-                        new ResponseMessageBuilder().code(500).message("Internal server error").build()
+                        new ResponseMessageBuilder().code(200).message("Запрос успешно выполнен").build(),
+                        new ResponseMessageBuilder().code(400).message("Ошибка в запросе").build(),
+                        new ResponseMessageBuilder().code(500).message("Внутренняя ошибка сервиса").build()
                         )
                 );
+        return docket;
     }
 
     @Override

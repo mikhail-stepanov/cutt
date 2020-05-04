@@ -2,7 +2,8 @@ package ru.stepanov.core.filters;
 
 import org.apache.commons.io.IOUtils;
 
-import javax.servlet.*;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
@@ -23,19 +24,22 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     @Override
-    public BufferedReader getReader() throws IOException{
+    public BufferedReader getReader() throws IOException {
         return new BufferedReader(new InputStreamReader(getInputStream()));
     }
 
     private void cacheInputStream() throws IOException {
+        //cache the inputstream in order to read it multiple times
         cachedBytes = new ByteArrayOutputStream();
         IOUtils.copy(super.getInputStream(), cachedBytes);
     }
 
+    //an inputstream which reads the cached request body
     public class CachedServletInputStream extends ServletInputStream {
-        private final ByteArrayInputStream input;
+        private ByteArrayInputStream input;
 
         public CachedServletInputStream() {
+            //create a new input stream from the cached request body
             input = new ByteArrayInputStream(cachedBytes.toByteArray());
         }
 
@@ -55,7 +59,7 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         }
 
         @Override
-        public int read() {
+        public int read() throws IOException {
             return input.read();
         }
     }

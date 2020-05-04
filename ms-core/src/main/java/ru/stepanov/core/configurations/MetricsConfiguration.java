@@ -1,6 +1,5 @@
 package ru.stepanov.core.configurations;
 
-
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.util.HierarchicalNameMapper;

@@ -75,9 +75,9 @@ public abstract class AbstractMicroservice {
     public final ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
-        StringBuilder fields = new StringBuilder();
+        StringBuffer fields = new StringBuffer();
         for (FieldError field : fieldErrors) {
-            fields.append(field.getField()).append(", ");
+            fields.append(field.getField() + ", ");
         }
         fields.delete(fields.length() - 2, fields.length());
         return handleMicroserviceException(new MsBadRequestException(fields.toString()), request, HttpStatus.BAD_REQUEST);
@@ -89,7 +89,7 @@ public abstract class AbstractMicroservice {
     }
 
     private String getInternalSessionId() {
-        return header("cutt-sid")
+        return header("x-cutt-sid")
                 .orElse(UUID.randomUUID().toString());
     }
 
@@ -131,8 +131,10 @@ public abstract class AbstractMicroservice {
                 ex.getMessage(),
                 requestURL,
                 requestBody);
+        //пишем детальную информацию в другой лог
         log.error(errorMessage);
 
+        //возвращаем пользователю ничего не значащую информацию об ошибке
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code(String.valueOf(httpStatus.value()))
                 .session(getInternalSessionId())
