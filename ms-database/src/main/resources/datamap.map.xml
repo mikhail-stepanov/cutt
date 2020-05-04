@@ -396,7 +396,7 @@
 	<obj-relationship name="customerToComment" source="DbCustomer" target="DbComment" deleteRule="Deny" db-relationship-path="customerToComment"/>
 	<obj-relationship name="customerToFavorites" source="DbCustomer" target="DbFavorites" deleteRule="Deny" db-relationship-path="customerToFavorites"/>
 	<obj-relationship name="customerToMessage" source="DbCustomer" target="DbMessage" deleteRule="Deny" db-relationship-path="customerToMessage"/>
-	<obj-relationship name="customerToSession" source="DbCustomer" target="DbCustomerSession" deleteRule="Deny" db-relationship-path="customerToSession"/>
+	<obj-relationship name="sessionToCustomer" source="DbCustomerSession" target="DbCustomer" deleteRule="Nullify" db-relationship-path="sessionToCustomer"/>
 	<obj-relationship name="cutterToAddress" source="DbCutter" target="DbAddress" deleteRule="Nullify" db-relationship-path="cutterToAddress"/>
 	<obj-relationship name="cutterToAppointment" source="DbCutter" target="DbAppointment" deleteRule="Deny" db-relationship-path="cutterToAppointment"/>
 	<obj-relationship name="cutterToChat" source="DbCutter" target="DbChat" deleteRule="Deny" db-relationship-path="cutterToChat"/>
@@ -404,8 +404,8 @@
 	<obj-relationship name="cutterToCutterServices" source="DbCutter" target="DbCutterServices" deleteRule="Deny" db-relationship-path="cutterToCutterServices"/>
 	<obj-relationship name="cutterToFavorites" source="DbCutter" target="DbFavorites" deleteRule="Deny" db-relationship-path="cutterToFavorites"/>
 	<obj-relationship name="cutterToMessage" source="DbCutter" target="DbMessage" deleteRule="Deny" db-relationship-path="cutterToMessage"/>
-	<obj-relationship name="cutterToSession" source="DbCutter" target="DbCutterSession" deleteRule="Deny" db-relationship-path="cutterToSession"/>
 	<obj-relationship name="cutterServicesToServices" source="DbCutterServices" target="DictionaryCutServices" deleteRule="Nullify" db-relationship-path="cutterServicesToServices"/>
+	<obj-relationship name="sessionToCutter" source="DbCutterSession" target="DbCutter" deleteRule="Nullify" db-relationship-path="sessionToCutter"/>
 	<obj-relationship name="messageToAttachment" source="DbMessage" target="DbAttachment" deleteRule="Deny" db-relationship-path="messageToAttachment"/>
 	<obj-relationship name="messageToChat" source="DbMessage" target="DbChat" deleteRule="Nullify" db-relationship-path="messageToChat"/>
 	<obj-relationship name="servicesToAppointmentServices" source="DictionaryCutServices" target="DbAppointmentServices" deleteRule="Deny" db-relationship-path="servicesToAppointmentServices"/>

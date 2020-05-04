@@ -10,7 +10,6 @@ import ru.stepanov.database.entity.DbAddress;
 import ru.stepanov.database.entity.DbAppointment;
 import ru.stepanov.database.entity.DbChat;
 import ru.stepanov.database.entity.DbComment;
-import ru.stepanov.database.entity.DbCustomerSession;
 import ru.stepanov.database.entity.DbFavorites;
 import ru.stepanov.database.entity.DbMessage;
 
@@ -41,7 +40,6 @@ public abstract class _DbCustomer extends CayenneDataObject {
     public static final Property<List<DbComment>> CUSTOMER_TO_COMMENT = Property.create("customerToComment", List.class);
     public static final Property<List<DbFavorites>> CUSTOMER_TO_FAVORITES = Property.create("customerToFavorites", List.class);
     public static final Property<List<DbMessage>> CUSTOMER_TO_MESSAGE = Property.create("customerToMessage", List.class);
-    public static final Property<List<DbCustomerSession>> CUSTOMER_TO_SESSION = Property.create("customerToSession", List.class);
 
     public void setCreatedDate(LocalDateTime createdDate) {
         writeProperty("createdDate", createdDate);
@@ -172,18 +170,6 @@ public abstract class _DbCustomer extends CayenneDataObject {
     @SuppressWarnings("unchecked")
     public List<DbMessage> getCustomerToMessage() {
         return (List<DbMessage>)readProperty("customerToMessage");
-    }
-
-
-    public void addToCustomerToSession(DbCustomerSession obj) {
-        addToManyTarget("customerToSession", obj, true);
-    }
-    public void removeFromCustomerToSession(DbCustomerSession obj) {
-        removeToManyTarget("customerToSession", obj, true);
-    }
-    @SuppressWarnings("unchecked")
-    public List<DbCustomerSession> getCustomerToSession() {
-        return (List<DbCustomerSession>)readProperty("customerToSession");
     }
 
 

@@ -11,7 +11,6 @@ import ru.stepanov.database.entity.DbAppointment;
 import ru.stepanov.database.entity.DbChat;
 import ru.stepanov.database.entity.DbComment;
 import ru.stepanov.database.entity.DbCutterServices;
-import ru.stepanov.database.entity.DbCutterSession;
 import ru.stepanov.database.entity.DbFavorites;
 import ru.stepanov.database.entity.DbMessage;
 
@@ -43,7 +42,6 @@ public abstract class _DbCutter extends CayenneDataObject {
     public static final Property<List<DbCutterServices>> CUTTER_TO_CUTTER_SERVICES = Property.create("cutterToCutterServices", List.class);
     public static final Property<List<DbFavorites>> CUTTER_TO_FAVORITES = Property.create("cutterToFavorites", List.class);
     public static final Property<List<DbMessage>> CUTTER_TO_MESSAGE = Property.create("cutterToMessage", List.class);
-    public static final Property<List<DbCutterSession>> CUTTER_TO_SESSION = Property.create("cutterToSession", List.class);
 
     public void setCreatedDate(LocalDateTime createdDate) {
         writeProperty("createdDate", createdDate);
@@ -186,18 +184,6 @@ public abstract class _DbCutter extends CayenneDataObject {
     @SuppressWarnings("unchecked")
     public List<DbMessage> getCutterToMessage() {
         return (List<DbMessage>)readProperty("cutterToMessage");
-    }
-
-
-    public void addToCutterToSession(DbCutterSession obj) {
-        addToManyTarget("cutterToSession", obj, true);
-    }
-    public void removeFromCutterToSession(DbCutterSession obj) {
-        removeToManyTarget("cutterToSession", obj, true);
-    }
-    @SuppressWarnings("unchecked")
-    public List<DbCutterSession> getCutterToSession() {
-        return (List<DbCutterSession>)readProperty("cutterToSession");
     }
 
 
